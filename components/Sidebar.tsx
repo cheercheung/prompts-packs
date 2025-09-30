@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Category } from '../types';
 
@@ -15,7 +14,8 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, activeCategoryId, onClose
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-    onClose();
+    // Add a small delay to ensure the scroll animation is not interrupted by the sidebar closing on mobile.
+    setTimeout(onClose, 150);
   };
 
   return (

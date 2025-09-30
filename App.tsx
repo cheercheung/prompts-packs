@@ -1,17 +1,17 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { promptData } from './data/prompts';
 import { Category } from './types';
 import Sidebar from './components/Sidebar';
 import PromptCard from './components/PromptCard';
-import { MenuIcon, SearchIcon } from './components/Icons';
+import { MenuIcon, SearchIcon, XIcon } from './components/Icons';
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   
-  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // FIX: The ref is for a <section> element, which is an HTMLElement, not an HTMLDivElement.
+  const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -116,15 +116,26 @@ const App: React.FC = () => {
               </button>
               <h1 className="text-xl md:text-2xl font-bold text-brand-text">OpenAI Prompt Packs</h1>
             </div>
-            <div className="relative w-full max-w-xs ml-4">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search prompts..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
-              />
+            <div className="flex items-center gap-4 ml-4">
+              <div className="relative w-full max-w-xs">
+                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search prompts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-brand-border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
+                />
+              </div>
+              <a
+                href="https://x.com/cheerselflin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-brand-primary transition-colors flex-shrink-0"
+                aria-label="Follow on X"
+              >
+                <XIcon className="w-5 h-5" />
+              </a>
             </div>
           </div>
         </header>
@@ -136,7 +147,8 @@ const App: React.FC = () => {
                 key={category.id} 
                 id={category.id} 
                 className="mb-12 scroll-mt-24"
-                ref={(el) => (categoryRefs.current[category.id] = el)}
+                // FIX: A ref callback must not return a value. Changed to a block body for a void return.
+                ref={(el) => { categoryRefs.current[category.id] = el; }}
               >
                 <div className="mb-8">
                     <h2 className="text-3xl font-bold text-brand-text border-b-2 border-brand-primary pb-2">
@@ -167,8 +179,10 @@ const App: React.FC = () => {
             </div>
           )}
           <footer className="text-center text-sm text-gray-500 mt-12 py-4 border-t border-brand-border">
-            <p>Sourced from OpenAI Academy. Updated: August 2025</p>
-            <p>整理者: Claude Code | 整理日期: 2025-09-30</p>
+            <div className="space-y-1">
+                <p>Sourced from OpenAI Academy.</p>
+                <p>整理者: 林悦己 | 整理日期: 2025-09-30</p>
+            </div>
           </footer>
         </div>
       </main>
