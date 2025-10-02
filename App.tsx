@@ -10,7 +10,6 @@ const App: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   
-  // FIX: The ref is for a <section> element, which is an HTMLElement, not an HTMLDivElement.
   const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
 
   useEffect(() => {
@@ -27,8 +26,6 @@ const App: React.FC = () => {
   
     const currentRefs = Object.values(categoryRefs.current);
   
-    // Fix: Argument of type 'unknown' is not assignable to parameter of type 'Element'.
-    // Use `instanceof Element` as a type guard to ensure type safety before calling observer methods.
     currentRefs.forEach((ref) => {
       if (ref instanceof Element) {
         observer.observe(ref);
@@ -36,8 +33,6 @@ const App: React.FC = () => {
     });
   
     return () => {
-      // Fix: Argument of type 'unknown' is not assignable to parameter of type 'Element'.
-      // Use `instanceof Element` as a type guard to ensure type safety before calling observer methods.
       currentRefs.forEach((ref) => {
         if (ref instanceof Element) {
           observer.unobserve(ref);
@@ -147,7 +142,6 @@ const App: React.FC = () => {
                 key={category.id} 
                 id={category.id} 
                 className="mb-12 scroll-mt-24"
-                // FIX: A ref callback must not return a value. Changed to a block body for a void return.
                 ref={(el) => { categoryRefs.current[category.id] = el; }}
               >
                 <div className="mb-8">
